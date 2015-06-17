@@ -3,6 +3,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     methodOverride = require('method-override'),
+    session = require("cookie-session"),
     db = require('./models');
     loginMiddleware = require("./middleware/loginHelper");
     routeMiddleware = require("./middleware/routeHelper");
@@ -20,9 +21,16 @@ app.use(session({
 }));
 
 //ROOT
-app.get('/', function(req,res) {
+app.get('/',routeMiddleware.preventLoginSignup,function(req,res) {
   res.redirect('/posts');
 });
+
+//USERS SHOW PAGE
+app.get('/users/:id',function(req,res){
+  // db.User.findById(req.params.id, function(err,user){
+  //   res.render('users/show', user:user)
+  // })
+})
 
 //INDEX
 app.get('/posts', function(req,res) {
