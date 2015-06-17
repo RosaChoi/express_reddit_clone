@@ -19,9 +19,13 @@ app.get('/', function(req,res) {
 //INDEX
 app.get('/posts', function(req,res) {
   db.Post.find({},
-  function(err. posts) {
+  function(err, posts) {
     res.render('posts/index', {posts: posts});
   });
+});
+
+app.get('/posts/new', function(req,res) {
+  res.render("posts/new")
 });
 
 //CATCH ALL
