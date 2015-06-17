@@ -3,7 +3,6 @@ var mongoose = require('mongoose');
 mongoose.set('debug', true);
 
 var commentSchema = new mongoose.Schema ({
-                        title: {type: String, required: true},
                         body: {type: String, required: true},
                         post: {
                           type: mongoose.Schema.Types.ObjectId,
