@@ -29,6 +29,48 @@ app.get('/posts/new', function(req,res) {
   res.render("posts/new")
 });
 
+//SHOW POST
+app.get('/posts/:id', function(req,res){
+  console.log(req.params.id)
+  db.Post.findById(req.params.id, function(err,post){
+    res.render('posts/show', {post: post})
+  })
+})
+
+//EDIT POST
+app.get('/posts/:id/edit', function(req,res){
+  db.Post.findById(req.params.id, function(err,post){
+    res.render('posts/edit', {post: post})
+  })
+})
+
+//UPDATE POST
+app.put('/posts/:id', function(req,res){
+  var show_page = "/posts/" + req.params.id
+  db.Post.findByIdAndUpdate(req.params.id, req.body.post, function(err,post){
+    if (err) {
+      console.log(err)
+      res.render('edit')
+    } else {
+    res.redirect(show_page)
+    }
+  })
+})
+
+//DESTROY POST
+app.delete('/posts/:id', function(req,res){
+  db.Post.findById(req.params.id, function(err, post){
+    if (err) {
+      console.log(err)
+      res.render('posts/show')
+    } else {
+      post.remove()
+      res.redirect('/posts')
+    }
+
+  })
+})
+
 //CREATE POST
 app.post('/posts', function(req,res) {
   db.Post.create(req.body.post, function(err, post){

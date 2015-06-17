@@ -1,8 +1,21 @@
 <%= include ../partials/header %>
   <h1>Posts</h1>
+
   <a href="/posts/new">Add a new post</a>
+  <hr>
   <% posts.forEach(function(post) {  %>
-    <p><%= post.title %></p>
-    <p><%= post.body %></p>
+    <div class="ui grid">
+    	<div class="one wide column">
+    	</div>
+        <div class="one wide column">
+          <img src="<%= post.media  %>" class="ui small image" alt="">
+        </div>
+        <div class="nine wide column">
+          <p><h3><a href="posts/<%= post.id %>"><%= post.title %></a></h3></p>
+        </div>
+        <div class="three wide column">
+          <p></p>
+        </div>
+    </div>
   <% }) %>
 <%= include ../partials/footer %>
