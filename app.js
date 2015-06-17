@@ -24,13 +24,26 @@ app.get('/posts', function(req,res) {
   });
 });
 
+//NEW POST
 app.get('/posts/new', function(req,res) {
   res.render("posts/new")
 });
 
+//CREATE POST
+app.post('/posts', function(req,res) {
+  db.Post.create(req.body.post, function(err, post){
+    if (err) { 
+      console.log(err)
+      res.render('/posts/new')
+    } else {
+      res.redirect('/posts')
+    }
+  })
+});
+
 //CATCH ALL
 app.get('*', function(req,res){
-  res.render('404');
+  res.render('errors/404');
 });
 
 
