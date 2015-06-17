@@ -1,6 +1,4 @@
 <%= include ../partials/footer %>
-
-
 	<a href="/posts">Back</a>
 
 	<h2> <%= post.title  %> </h2>
@@ -9,15 +7,10 @@
 		<%= post.body %>
 	</p>
 
-	
 	<a href="/posts/<%= post.id %>/edit"><button>Edit</button></a>
 
 	<form action="/posts/<%= post.id %>?_method=delete" method="POST">
 		<input type="submit" value="delete">
 	</form>
-
-	
-
-
 
 <%= include ../partials/header %>
