@@ -1,4 +1,5 @@
 <%= include ../partials/header %>
+<script src='/javascripts/comments.js'></script>
 <div class="ui page grid">
 	<h1 class="ui dividing header"><%= post.title  %></h1>
 </div>
@@ -25,10 +26,14 @@
 	</div>
 </div>
 <div class="ui page grid">
-	<h4 class="ui dividing header">Comments</h4>
-	<a href="/posts/<%= post._id%>/comments" class="ui black basic button">See all comments</a>
-	<a href="/posts/<%= post._id%>/comments/new" class="ui black basic button">Add a new comment</a>
-	<a href="/posts" class="ui basic button">Back</a>
+  <h4 class="ui dividing header">Comments</h4>
+</div>
+<div class="ui page grid">
+  <a href="/posts/<%= post._id%>/comments" class="ui black basic button">See all comments</a>
+  <a href="/posts/<%= post._id%>/comments/new" class="ui black basic button">Add a new comment</a>
+  <a href="/posts" class="ui basic button">Back</a>
+  <h4 class="ui header"></h4>
+  <div id="comments"></div>
 </div>
 
 

@@ -160,13 +160,25 @@ app.delete('/posts/:id',routeMiddleware.ensureCorrectUserForPost, function(req,r
 })
 
 
-
 /********* COMMENT ROUTES *********/
 
 //INDEX
 app.get('/posts/:post_id/comments', function(req,res){
+
   db.Post.findById(req.params.post_id).populate('comments').exec(function(err,post) {
-    res.render("comments/index", {post:post});
+    res.format({
+          'text/html': function(){
+            res.render("comments/index", {post:post});
+          },
+
+          'application/json': function(){
+            res.send({ post: post });
+          },
+          'default': function() {
+            // log the request and respond with 406
+            res.status(406).send('Not Acceptable');
+          }
+    });
   });
 });
 
@@ -176,7 +188,6 @@ app.get('/posts/:post_id/comments/new', function(req,res){
       res.render("comments/new", {post:post, author_id: req.session.id});
     });
 });
-
 
 //CREATE COMMENT
 app.post('/posts/:post_id/comments', function(req,res) {
