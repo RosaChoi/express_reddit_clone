@@ -106,6 +106,12 @@ app.get('/posts/new', routeMiddleware.ensureLoggedIn, function(req,res) {
 //CREATE POST
 app.post('/posts', function(req,res) {
   db.Post.create(req.body.post, function(err, post){
+
+    if(!post.media) {
+      post.media = "http://farm6.staticflickr.com/5241/5294677555_7efa8154db.jpg"
+      post.save()
+    };
+
     if (err) {
       console.log(err)
       res.render('/posts/new')
