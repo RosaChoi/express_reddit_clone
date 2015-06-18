@@ -11,6 +11,10 @@ var commentSchema = new mongoose.Schema ({
                           type: mongoose.Schema.Types.ObjectId,
                           ref: "Post"
                         },
+                        author: {
+                        	type: mongoose.Schema.Types.ObjectId,
+                        	ref: "User"
+                        }
                       });
 
 var Comment = mongoose.model("Comment", commentSchema);
