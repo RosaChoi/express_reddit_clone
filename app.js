@@ -64,6 +64,11 @@ app.post('/signup', function(req,res){
   })
 })
 
+app.get("/logout", function (req, res) {
+  req.logout();
+  res.redirect("/");
+});
+
 //USERS SHOW PAGE
 app.get('/users/:id',function(req,res){
   // db.User.findById(req.params.id, function(err,user){
@@ -193,18 +198,21 @@ app.post('/posts/:post_id/comments', function(req,res) {
 });
 
 //EDIT COMMENT
-app.get('/comments/:id/edit', function(req,res) {
+app.get('/comments/:id/edit', routeMiddleware.ensureLoggedIn, function(req,res) {
   db.Comment.findById(req.params.id, function(err, comment) {
     if (err) {
       console.log(err);
     } else {
-      res.render("comments/edit", {comment:comment});
+      db.Post.findById(comment.post, function(err, post) {
+        if(err) console.log(err);
+        res.render("comments/edit", {comment:comment});
+      });
     }
   });
 });
 
 //UPDATE COMMENT
-app.put('/comments/:id', function(req,res){
+app.put('/comments/:id', routeMiddleware.ensureLoggedIn, function(req,res){
   db.Comment.findByIdAndUpdate(req.params.id, req.body.comment, function(err, comment) {
     if(err){
       res.render('comments/edit');
@@ -215,22 +223,19 @@ app.put('/comments/:id', function(req,res){
 });
 
 //DESTROY
-app.delete('/comments/:id', function(req,res) {
+app.delete('/comments/:id', routeMiddleware.ensureLoggedIn, function(req,res) {
   db.Comment.findByIdAndRemove(req.params.id, function(err, comment) {
     if(err) {
       console.log(err);
-      res.render('comments/edit');
+      res.render('comments/index');
     }
     else {
-      res.redirect('/posts' + comment.post + "/comments");
+      res.redirect('/posts/' + comment.post + "/comments");
     }
   });
 });
 
-app.get("/logout", function (req, res) {
-  req.logout();
-  res.redirect("/");
-});
+
 
 
 //CATCH ALL

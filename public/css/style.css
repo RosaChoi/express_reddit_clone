@@ -5,3 +5,27 @@
 .right.menu {
   padding: 5px 0;
 }
+
+.ui.page.grid {
+  margin-top: 30px;
+}
+
+#newPost {
+  margin-bottom: 30px;
+}
+
+.right {
+  float: right;
+}
+
+#allPosts,
+#postShow,
+#allComments {
+  margin: 40px 80px;
+}
+
+#deletePost {
+  position: relative;
+  bottom: -15ps;
+  right: 80px;
+}
