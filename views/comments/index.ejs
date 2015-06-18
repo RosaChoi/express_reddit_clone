@@ -1,7 +1,7 @@
 <% include ../partials/header %>
   <div class="ui page grid">
     <div class="two buttons">
-      
+
       <a class="ui teal button" href="/">See all posts</a>
     </div>
     <h1 class="ui dividing header">comments</h1>
@@ -12,7 +12,7 @@
     <p><%= comment.body %></p>
     <div class="ui right">
       <a class="ui purple button" href="/comments/<%= comment.id %>/edit">Edit</a>
-      <form action="/comments/<%= comment.id %>?_method=delete" method="POST">
+      <form action="/comments/<%= comment.id %>?_method=delete" method="POST" style="float:right;">
         <input type="submit" class="ui red button"value="Delete">
       </form>
     </div>

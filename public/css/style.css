@@ -29,3 +29,7 @@
   bottom: -15ps;
   right: 80px;
 }
+
+.ui.items > .item .extra {
+  width: 168px;
+}

@@ -1,6 +1,6 @@
 $(document).ready(function(){
-	
-  var url  = window.location.pathname + "/comments" 
+
+  var url  = window.location.pathname + "/comments"
 
   function loadComments() {
     $.getJSON(url).done(function(data) {
