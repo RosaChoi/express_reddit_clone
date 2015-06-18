@@ -1,7 +1,7 @@
 <%= include ../partials/header %>
-  <h1>Posts</h1>
+  <h1>Posts | <a href="/logout">logout</a></h1>
 
-  <a href="/posts/new">Add a new post</a>
+  <a href="/posts/new">Add a new post</a> 
   <hr>
   <% posts.forEach(function(post) {  %>
     <div class="ui grid">
@@ -12,6 +12,7 @@
         </div>
         <div class="nine wide column">
           <p><h3><a href="/posts/<%= post.id %>"><%= post.title %></a></h3></p>
+          <p><h3>Created by:<%= post.author.username %></a></h3></p>
         </div>
         <div class="three wide column">
           <p></p>

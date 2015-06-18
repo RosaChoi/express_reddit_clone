@@ -27,11 +27,11 @@ app.get('/', function(req,res){
   res.render('users/index');
 });
 
-app.get('/users/index', function(req,res){
+app.get('/users/index', routeMiddleware.preventLoginSignup, function(req,res){
   res.render('users/index')
 })
 
-app.get('/login', function(req,res){
+app.get('/login', routeMiddleware.preventLoginSignup, function(req,res){
   res.render('users/login')
 })
 
@@ -48,7 +48,7 @@ app.post("/login", function (req, res) {
   });
 });
 
-app.get('/signup', function(req,res){
+app.get('/signup', routeMiddleware.preventLoginSignup, function(req,res){
   res.render('users/signup')
 })
 
@@ -68,20 +68,19 @@ app.post('/signup', function(req,res){
 app.get('/users/:id',function(req,res){
   // db.User.findById(req.params.id, function(err,user){
   //   res.render('users/show', user:user)
-  // })
+  // }
 })
 
-//INDEX
+//INDEX POST
 app.get('/posts', function(req,res) {
-  db.Post.find({},
-  function(err, posts) {
+  db.Post.find({}).populate('author').exec(function(err, posts) {
     res.render('posts/index', {posts: posts});
   });
 });
 
 //NEW POST
-app.get('/posts/new', function(req,res) {
-  res.render("posts/new")
+app.get('/posts/new', routeMiddleware.ensureLoggedIn, function(req,res) {
+  res.render("posts/new", {user_id:req.session.id})
 });
 
 //SHOW POST
