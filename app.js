@@ -75,9 +75,12 @@ app.get('/users/:id',function(req,res){
 
 //INDEX
 app.get('/posts', function(req,res) {
-  db.Post.find({},
-  function(err, posts) {
-    res.render('posts/index', {posts: posts});
+  db.Post.find({}, function(err, posts) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render('posts/index', {posts: posts});
+    }
   });
 });
 
@@ -109,6 +112,9 @@ app.get('/posts/:id', function(req,res){
 //EDIT POST
 app.get('/posts/:id/edit',routeMiddleware.ensureCorrectUserForPost, function(req,res){
   db.Post.findById(req.params.id, function(err,post){
+    if (err) {
+      console.log(err);
+    }
     res.render('posts/edit', {post: post})
   })
 })
@@ -142,19 +148,22 @@ app.delete('/posts/:id', function(req,res){
 
 
 /********* COMMENT ROUTES *********/
+//INDEX
 app.get('/posts/:post_id/comments', function(req,res){
-  db.Post.findById(req.params.post_id).populate('comments').exec(function(err,post){
+  db.Post.findById(req.params.post_id)
+    .populate('comments')
+    .exec(function(err,post) {
     res.render("comments/index", {post:post});
   });
 });
 
 //NEW COMMENT
 app.get('/posts/:post_id/comments/new', function(req,res){
-  db.Post.findById(req.params.post_id,
-    function (err, post) {
+  db.Post.findById(req.params.post_id, function (err, post) {
       res.render("comments/new", {post:post});
     });
 });
+
 
 //CREATE COMMENT
 app.post('/posts/:post_id/comments', function(req,res) {
@@ -171,6 +180,41 @@ app.post('/posts/:post_id/comments', function(req,res) {
         post.save();
         res.redirect("/posts/" + req.params.post_id + "/comments");
       });
+    }
+  });
+});
+
+//EDIT COMMENT
+app.get('/comments/:id/edit', function(req,res) {
+  db.Comment.findById(req.params.id, function(err, comment) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("comments/edit", {comment:comment});
+    }
+  });
+});
+
+//UPDATE COMMENT
+app.put('/comments/:id', function(req,res){
+  db.Comment.findByIdAndUpdate(req.params.id, req.body.comment, function(err, comment) {
+    if(err){
+      res.render('comments/edit');
+    } else {
+      res.redirect('/posts/' + comment.post + '/comments');
+    }
+  });
+});
+
+//DESTROY
+app.delete('/comments/:id', function(req,res) {
+  db.Comment.findByIdAndRemove(req.params.id, function(err, comment) {
+    if(err) {
+      console.log(err);
+      res.render('comments/edit');
+    }
+    else {
+      res.redirect('/posts' + comment.post + "/comments");
     }
   });
 });
