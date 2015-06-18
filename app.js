@@ -80,8 +80,13 @@ app.get('/posts', function(req,res) {
     if (err) {
       console.log(err);
     } else {
-      db
-      res.render('posts/index', {posts: posts});
+      if(req.session.id == null){
+        res.render('posts/index', {posts: posts, currentuser: ""});
+      } else {
+        db.User.findById(req.session.id, function(err,user){
+          res.render('posts/index', {posts: posts, currentuser: user});
+        })
+      }
     }
   });
 });

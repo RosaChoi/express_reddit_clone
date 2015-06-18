@@ -6,8 +6,6 @@ var loginHelpers = function (req, res, next) {
     req.session.id = user._id;
   };
 
-
-
   req.logout = function () {
     req.session.id = null;
     req.user  = null;
