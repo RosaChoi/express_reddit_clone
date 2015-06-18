@@ -11,12 +11,12 @@
           <img src="<%= post.media  %>" class="ui small image" alt="">
         </div>
         <div class="nine wide column">
-          <p><h3><a href="posts/<%= post.id %>"><%= post.title %></a></h3></p>
+          <p><h3><a href="/posts/<%= post.id %>"><%= post.title %></a></h3></p>
         </div>
         <div class="three wide column">
           <p></p>
         </div>
     </div>
   <% }) %>
-  
+
 <%= include ../partials/footer %>
