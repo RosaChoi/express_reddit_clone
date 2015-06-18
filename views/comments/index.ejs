@@ -1,0 +1,11 @@
+<% include ../partials/header %>
+  <h1><%= post.title %> - comments</h1>
+  <% post.comments.forEach(function(comment){ %>
+    <p><%= comment.body %></p>
+  <% })%>
+  <a href="/posts/<%= post.id%>/comments/new">Add a new comment!</a>
+
+  <p>
+    <a href="/">See all posts</a>
+  </p>
+<% include ../partials/footer %>

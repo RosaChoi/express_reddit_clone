@@ -32,6 +32,8 @@ app.get('/users/:id',function(req,res){
   // })
 })
 
+/********* POST ROUTES *********/
+
 //INDEX
 app.get('/posts', function(req,res) {
   db.Post.find({},
@@ -45,13 +47,25 @@ app.get('/posts/new', function(req,res) {
   res.render("posts/new")
 });
 
+//CREATE POST
+app.post('/posts', function(req,res) {
+  db.Post.create(req.body.post, function(err, post){
+    if (err) {
+      console.log(err)
+      res.render('/posts/new')
+    } else {
+      res.redirect('/posts')
+    }
+  });
+});
+
 //SHOW POST
 app.get('/posts/:id', function(req,res){
-  console.log(req.params.id)
-  db.Post.findById(req.params.id, function(err,post){
-    res.render('posts/show', {post: post})
-  })
-})
+  db.Post.findById(req.params.id).populate('comments').exec(
+    function(err,post){
+      res.render('posts/show', {post: post})
+    });
+});
 
 //EDIT POST
 app.get('/posts/:id/edit', function(req,res){
@@ -66,7 +80,7 @@ app.put('/posts/:id', function(req,res){
   db.Post.findByIdAndUpdate(req.params.id, req.body.post, function(err,post){
     if (err) {
       console.log(err)
-      res.render('edit')
+      res.render('posts/edit')
     } else {
     res.redirect(show_page)
     }
@@ -86,17 +100,44 @@ app.delete('/posts/:id', function(req,res){
   })
 })
 
-//CREATE POST
-app.post('/posts', function(req,res) {
-  db.Post.create(req.body.post, function(err, post){
-    if (err) { 
-      console.log(err)
-      res.render('/posts/new')
-    } else {
-      res.redirect('/posts')
-    }
-  })
+
+
+/********* COMMENT ROUTES *********/
+app.get('/posts/:post_id/comments', function(req,res){
+  db.Post.findById(req.params.post_id).populate('comments').exec(function(err,post){
+    res.render("comments/index", {post:post});
+  });
 });
+
+//NEW COMMENT
+app.get('/posts/:post_id/comments/new', function(req,res){
+  db.Post.findById(req.params.post_id,
+    function (err, post) {
+      res.render("comments/new", {post:post});
+    });
+});
+
+//CREATE COMMENT
+app.post('/posts/:post_id/comments', function(req,res) {
+  db.Comment.create(req.body.comment, function(err, comments) {
+    if(err) {
+      console.log(err);
+      res.render('comments/new');
+    } else {
+      db.Post.findById(req.params.post_id, function(err, post) {
+        post.comments.push(comments);
+        console.log(comments);
+        comments.post = post._id;
+        comments.save();
+        post.save();
+        res.redirect("/posts/" + req.params.post_id + "/comments");
+      });
+    }
+  });
+});
+
+
+
 
 //CATCH ALL
 app.get('*', function(req,res){

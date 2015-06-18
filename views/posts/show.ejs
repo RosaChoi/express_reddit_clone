@@ -1,16 +1,30 @@
-<%= include ../partials/footer %>
+<%= include ../partials/header %>
 	<a href="/posts">Back</a>
 
-	<h2> <%= post.title  %> </h2>
-	<img src="<%= post.media %>" class="ui image small segment" alt="">
+	<div class="ui segment">
+		<h2 class="ui header"> <%= post.title  %> </h2>
+
+		<div class="ui">
+			<a class="ui primary button" href="/posts/<%= post.id %>/edit">Edit</a>
+			<form action="/posts/<%= post.id %>?_method=delete" method="POST">
+				<input class="ui primary button" type="submit" value="delete">
+			</form>
+		</div>
+		<img src="<%= post.media %>" class="ui image small segment" alt="">
+		<p>
+			<%= post.body %>
+		</p>
+	</div>
+
 	<p>
-		<%= post.body %>
+		<a href="/posts/<%= post._id%>/comments">See all comments</a>
+	</p>
+	<p>
+		<a href="/posts/<%= post._id%>/comments/new">Add a new comment</a>
 	</p>
 
-	<a href="/posts/<%= post.id %>/edit"><button>Edit</button></a>
 
-	<form action="/posts/<%= post.id %>?_method=delete" method="POST">
-		<input type="submit" value="delete">
-	</form>
 
-<%= include ../partials/header %>
+
+
+<%= include ../partials/footer %>
