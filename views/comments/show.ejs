@@ -1,6 +1,7 @@
 <%= include ../partials/footer %>
 	<a href="/comments">Back</a>
 	<p><%= comment.body %></p>s
+	<p><%= comment.author %></p>s
 
 	<form action="/comments/<%= comment._id %>?_method=delete" method="POST">
 		<input type="submit" value="delete">
