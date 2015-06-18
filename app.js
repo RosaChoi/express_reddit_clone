@@ -24,7 +24,7 @@ app.use(loginMiddleware);
 
 //ROOT
 app.get('/', function(req,res){
-  res.render('users/index');
+  res.redirect('/posts');
 });
 
 app.get('/users/index', routeMiddleware.preventLoginSignup, function(req,res){
@@ -84,7 +84,7 @@ app.get('/posts', function(req,res) {
         res.render('posts/index', {posts: posts, currentuser: ""});
       } else {
         db.User.findById(req.session.id, function(err,user){
-          res.render('posts/index', {posts: posts, currentuser: user});
+          res.render('posts/index', {posts: posts, currentuser: user.username});
         })
       }
     }
