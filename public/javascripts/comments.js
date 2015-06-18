@@ -4,10 +4,9 @@ $(document).ready(function(){
 
   function loadComments() {
     $.getJSON(url).done(function(data) {
-        console.log(data.post.comments);
-        var comments = data.post.comments
+        var comments = data.comments
         comments.forEach(function(comment){
-          $("#comments").append("<h4 class='ui'><li>'"+ comment.body +"'</li></h4>")	
+          $("#comments").append("<h4 class='ui'><li>'"+ comment.body +"'</li>- "+ comment.author.username +"</h4>")	
         })
     });
   }

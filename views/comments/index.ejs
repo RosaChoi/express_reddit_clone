@@ -1,12 +1,12 @@
 <% include ../partials/header %>
   <div class="ui page grid">
     <div class="two buttons">
-      <a class="ui purple button" href="/posts/<%= post.id%>/comments/new">Add a new comment!</a>
+      
       <a class="ui teal button" href="/">See all posts</a>
     </div>
-    <h1 class="ui dividing header"><%= post.title %> - comments</h1>
+    <h1 class="ui dividing header">comments</h1>
   </div>
-  <% post.comments.forEach(function(comment){ %>
+  <% comments.forEach(function(comment){ %>
   <div id="allComments" class="ui segment">
     <p><%= comment.date %></p>
     <p><%= comment.body %></p>

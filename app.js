@@ -164,33 +164,33 @@ app.delete('/posts/:id',routeMiddleware.ensureCorrectUserForPost, function(req,r
 
 //INDEX
 app.get('/posts/:post_id/comments', function(req,res){
-
-  db.Post.findById(req.params.post_id).populate('comments').exec(function(err,post) {
+  db.Comment.find({post:req.params.post_id}).populate('author').exec(function(err,comments){
     res.format({
           'text/html': function(){
-            res.render("comments/index", {post:post});
+            res.render("comments/index", {comments:comments});
           },
 
           'application/json': function(){
-            res.send({ post: post });
+            res.send({ comments: comments });
           },
           'default': function() {
             // log the request and respond with 406
             res.status(406).send('Not Acceptable');
           }
     });
-  });
+  })
 });
 
+
 //NEW COMMENT
-app.get('/posts/:post_id/comments/new', function(req,res){
+app.get('/posts/:post_id/comments/new',routeMiddleware.ensureLoggedIn, function(req,res){
   db.Post.findById(req.params.post_id, function (err, post) {
       res.render("comments/new", {post:post, author_id: req.session.id});
     });
 });
 
 //CREATE COMMENT
-app.post('/posts/:post_id/comments', function(req,res) {
+app.post('/posts/:post_id/comments',routeMiddleware.ensureLoggedIn, function(req,res) {
   db.Comment.create(req.body.comment, function(err, comments) {
     if(err) {
       console.log(err);
