@@ -161,18 +161,16 @@ app.delete('/posts/:id',routeMiddleware.ensureCorrectUserForPost, function(req,r
 
 
 /********* COMMENT ROUTES *********/
+
 //INDEX
 app.get('/posts/:post_id/comments', function(req,res){
-  db.Post.findById(req.params.post_id)
-    .populate('comments')
-    .exec(function(err,post) {
+  db.Post.findById(req.params.post_id).populate('comments').exec(function(err,post) {
     res.render("comments/index", {post:post});
   });
 });
 
 //NEW COMMENT
 app.get('/posts/:post_id/comments/new', function(req,res){
-
   db.Post.findById(req.params.post_id, function (err, post) {
       res.render("comments/new", {post:post, author_id: req.session.id});
     });
@@ -198,32 +196,33 @@ app.post('/posts/:post_id/comments', function(req,res) {
   });
 });
 
+//EDIT COMMENT
+app.get('/comments/:id/edit', routeMiddleware.ensureCorrectUserForComment, function(req,res) {
 
-app.get('/comments/:id/edit', routeMiddleware.ensureLoggedIn, function(req,res) {
   db.Comment.findById(req.params.id, function(err, comment) {
     if (err) {
       console.log(err);
     } else {
-      db.Post.findById(comment.post, function(err, post) {
-        if(err) console.log(err);
         res.render("comments/edit", {comment:comment});
-      });
     }
   });
+
 });
 
-app.put('/comments/:id', routeMiddleware.ensureLoggedIn, function(req,res){
+//UPDATE COMMENT
+app.put('/comments/:id', routeMiddleware.ensureCorrectUserForComment, function(req,res){
   db.Comment.findByIdAndUpdate(req.params.id, req.body.comment, function(err, comment) {
     if(err){
       res.render('comments/edit');
     } else {
+      console.log(comment)
       res.redirect('/posts/' + comment.post + '/comments');
     }
   });
 });
 
 //DESTROY
-app.delete('/comments/:id', routeMiddleware.ensureLoggedIn, function(req,res) {
+app.delete('/comments/:id', routeMiddleware.ensureCorrectUserForComment, function(req,res) {
   db.Comment.findByIdAndRemove(req.params.id, function(err, comment) {
     if(err) {
       console.log(err);
