@@ -56,6 +56,7 @@ app.post('/signup', function(req,res){
    db.User.create(req.body.user, function(err, user){
     if (user) {
       console.log(user)
+      req.login(user)
       res.redirect('/posts')
     } else {
       console.log(err)
