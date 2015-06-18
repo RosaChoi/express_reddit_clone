@@ -20,10 +20,49 @@ app.use(session({
   name: "double chocochip"
 }));
 
+app.use(loginMiddleware);
+
 //ROOT
-app.get('/',routeMiddleware.preventLoginSignup,function(req,res) {
-  res.redirect('/posts');
+app.get('/', function(req,res){
+  res.render('users/index');
 });
+
+app.get('/users/index', function(req,res){
+  res.render('users/index')
+})
+
+app.get('/login', function(req,res){
+  res.render('users/login')
+})
+
+app.post("/login", function (req, res) {
+  db.User.authenticate(req.body.user,
+  function (err, user) {
+    if (!err && user !== null) {
+      req.login(user);
+      res.redirect("/posts");
+    } else {
+      console.log(err)
+      res.render('users/login', {err:err});
+    }
+  });
+});
+
+app.get('/signup', function(req,res){
+  res.render('users/signup')
+})
+
+app.post('/signup', function(req,res){
+   db.User.create(req.body.user, function(err, user){
+    if (user) {
+      console.log(user)
+      res.redirect('/posts')
+    } else {
+      console.log(err)
+      res.render('errors/404');
+    }
+  })
+})
 
 //USERS SHOW PAGE
 app.get('/users/:id',function(req,res){
@@ -68,7 +107,7 @@ app.get('/posts/:id', function(req,res){
 });
 
 //EDIT POST
-app.get('/posts/:id/edit', function(req,res){
+app.get('/posts/:id/edit',routeMiddleware.ensureCorrectUserForPost, function(req,res){
   db.Post.findById(req.params.id, function(err,post){
     res.render('posts/edit', {post: post})
   })
@@ -136,7 +175,10 @@ app.post('/posts/:post_id/comments', function(req,res) {
   });
 });
 
-
+app.get("/logout", function (req, res) {
+  req.logout();
+  res.redirect("/");
+});
 
 
 //CATCH ALL

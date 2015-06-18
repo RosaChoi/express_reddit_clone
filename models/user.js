@@ -44,7 +44,7 @@ userSchema.pre('save', function(next) {
 
 userSchema.statics.authenticate = function (formData, callback) {
   this.findOne({
-      email: formData.email
+      username: formData.username
     },
     function (err, user) {
       console.log(user)
@@ -71,4 +71,5 @@ userSchema.methods.checkPassword = function(password, callback) {
 
 
 var User = mongoose.model("User", userSchema);
+
 module.exports = User;

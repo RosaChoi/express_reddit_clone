@@ -10,21 +10,21 @@ var routeHelpers = {
     }
   },
 
-  ensureCorrectUser: function(req, res, next) {
-
-    db.Post.findById(req.params.id,function(err,puppy){
-      if (Post.ownerId !== req.session.id) {
+  ensureCorrectUserForPost: function(req, res, next) {
+    db.Post.findById(req.params.id).populate('author').exec(function(err,post){
+      console.log(post)
+      if (post.author.id !== req.session.id) {
         res.redirect('/posts');
       }
       else {
        return next();
       }
     });
-  },
 
+  },
   preventLoginSignup: function(req, res, next) {
     if (req.session.id !== null) {
-      res.redirect('/posts');
+      res.redirect('/users/index');
     }
     else {
      return next();
