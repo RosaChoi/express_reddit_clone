@@ -76,10 +76,11 @@ app.get('/users/:id',function(req,res){
 
 //INDEX
 app.get('/posts', function(req,res) {
-  db.Post.find({}, function(err, posts) {
+  db.Post.find({}).populate('author', 'username').exec(function(err, posts) {
     if (err) {
       console.log(err);
     } else {
+      db
       res.render('posts/index', {posts: posts});
     }
   });
@@ -87,7 +88,8 @@ app.get('/posts', function(req,res) {
 
 //NEW POST
 app.get('/posts/new', routeMiddleware.ensureLoggedIn, function(req,res) {
-  res.render("posts/new", {user_id:req.session.id})
+  console.log(req.session.id)
+  res.render("posts/new", {author_id:req.session.id})
 });
 
 //CREATE POST
