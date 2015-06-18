@@ -1,0 +1,17 @@
+<%= include ../partials/header %>
+  <div class="ui two column centered grid">
+    <div class="column">
+    	<h1>Create a new comment!</h1>
+    	<form action="/posts/<%= post.id %>/comments" method="POST">
+    		<div class="ui form segment">
+    			<div class="field">
+  				  <label for="comments">Comments:</label>
+  				  <textarea type="text" name="comment[body]" id="comments" placeholder="Write your comment.."></textarea>
+          </div>
+    		 	<input class="ui submit button" type="submit">
+    			</div>
+    		</div>
+    	</form>
+    </div>
+  </div>
+<%= include ../partials/footer %>

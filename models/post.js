@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Comment = require('./comment');
 
 mongoose.set('debug', true);
 
@@ -15,6 +16,11 @@ var postSchema = new mongoose.Schema ({
                     	ref: "User"
                     }
                   });
+
+postSchema.pre('remove', function(next) {
+  Comment.remove({post: this._id}).exec();
+  next();
+});
 
 var Post = mongoose.model("Post", postSchema);
 

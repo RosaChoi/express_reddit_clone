@@ -54,7 +54,7 @@ app.get('/signup', routeMiddleware.preventLoginSignup, function(req,res){
 
 app.post('/signup', function(req,res){
    db.User.create(req.body.user, function(err, user){
-    if (user) { 
+    if (user) {
       console.log(user)
       res.redirect('/posts')
     } else {
@@ -71,10 +71,17 @@ app.get('/users/:id',function(req,res){
   // }
 })
 
-//INDEX POST
+
+/********* POST ROUTES *********/
+
+//INDEX
 app.get('/posts', function(req,res) {
-  db.Post.find({}).populate('author').exec(function(err, posts) {
-    res.render('posts/index', {posts: posts});
+  db.Post.find({}, function(err, posts) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render('posts/index', {posts: posts});
+    }
   });
 });
 
@@ -83,17 +90,32 @@ app.get('/posts/new', routeMiddleware.ensureLoggedIn, function(req,res) {
   res.render("posts/new", {user_id:req.session.id})
 });
 
+//CREATE POST
+app.post('/posts', function(req,res) {
+  db.Post.create(req.body.post, function(err, post){
+    if (err) {
+      console.log(err)
+      res.render('/posts/new')
+    } else {
+      res.redirect('/posts')
+    }
+  });
+});
+
 //SHOW POST
 app.get('/posts/:id', function(req,res){
-  console.log(req.params.id)
-  db.Post.findById(req.params.id, function(err,post){
-    res.render('posts/show', {post: post})
-  })
-})
+  db.Post.findById(req.params.id).populate('comments').exec(
+    function(err,post){
+      res.render('posts/show', {post: post})
+    });
+});
 
 //EDIT POST
 app.get('/posts/:id/edit',routeMiddleware.ensureCorrectUserForPost, function(req,res){
   db.Post.findById(req.params.id, function(err,post){
+    if (err) {
+      console.log(err);
+    }
     res.render('posts/edit', {post: post})
   })
 })
@@ -104,7 +126,7 @@ app.put('/posts/:id', function(req,res){
   db.Post.findByIdAndUpdate(req.params.id, req.body.post, function(err,post){
     if (err) {
       console.log(err)
-      res.render('edit')
+      res.render('posts/edit')
     } else {
     res.redirect(show_page)
     }
@@ -124,22 +146,85 @@ app.delete('/posts/:id', function(req,res){
   })
 })
 
-//CREATE POST
-app.post('/posts', function(req,res) {
-  db.Post.create(req.body.post, function(err, post){
-    if (err) { 
-      console.log(err)
-      res.render('/posts/new')
+
+
+/********* COMMENT ROUTES *********/
+//INDEX
+app.get('/posts/:post_id/comments', function(req,res){
+  db.Post.findById(req.params.post_id)
+    .populate('comments')
+    .exec(function(err,post) {
+    res.render("comments/index", {post:post});
+  });
+});
+
+//NEW COMMENT
+app.get('/posts/:post_id/comments/new', function(req,res){
+  db.Post.findById(req.params.post_id, function (err, post) {
+      res.render("comments/new", {post:post});
+    });
+});
+
+
+//CREATE COMMENT
+app.post('/posts/:post_id/comments', function(req,res) {
+  db.Comment.create(req.body.comment, function(err, comments) {
+    if(err) {
+      console.log(err);
+      res.render('comments/new');
     } else {
-      res.redirect('/posts')
+      db.Post.findById(req.params.post_id, function(err, post) {
+        post.comments.push(comments);
+        console.log(comments);
+        comments.post = post._id;
+        comments.save();
+        post.save();
+        res.redirect("/posts/" + req.params.post_id + "/comments");
+      });
     }
-  })
+  });
+});
+
+//EDIT COMMENT
+app.get('/comments/:id/edit', function(req,res) {
+  db.Comment.findById(req.params.id, function(err, comment) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("comments/edit", {comment:comment});
+    }
+  });
+});
+
+//UPDATE COMMENT
+app.put('/comments/:id', function(req,res){
+  db.Comment.findByIdAndUpdate(req.params.id, req.body.comment, function(err, comment) {
+    if(err){
+      res.render('comments/edit');
+    } else {
+      res.redirect('/posts/' + comment.post + '/comments');
+    }
+  });
+});
+
+//DESTROY
+app.delete('/comments/:id', function(req,res) {
+  db.Comment.findByIdAndRemove(req.params.id, function(err, comment) {
+    if(err) {
+      console.log(err);
+      res.render('comments/edit');
+    }
+    else {
+      res.redirect('/posts' + comment.post + "/comments");
+    }
+  });
 });
 
 app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/");
 });
+
 
 //CATCH ALL
 app.get('*', function(req,res){
